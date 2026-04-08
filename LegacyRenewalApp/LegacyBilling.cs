@@ -5,9 +5,7 @@ public class LegacyBilling : IBillingService {
         LegacyBillingGateway.SaveInvoice(voice);
     }
 
-    public void sendEmail(string mail, string name, string plan) {
-        var subject = "Generated information!";
-        var body = $"Morning {name}, We are happy to announce that ur plan: {plan} is ready!";
-        LegacyBillingGateway.SendEmail(mail, subject, body);
+    public void sendEmail(string mail, string name, string body) {
+        LegacyBillingGateway.SendEmail(mail, name, body);
     }
 }
