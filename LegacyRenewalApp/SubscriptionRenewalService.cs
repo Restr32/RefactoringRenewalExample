@@ -3,12 +3,15 @@ using System;
 namespace LegacyRenewalApp
 {
     public class SubscriptionRenewalService {
-        public CustomerRepository customerRepository;
-        public SubscriptionPlanRepository planRepository;
+        private CustomerRepository customerRepository;
+        private SubscriptionPlanRepository planRepository;
+        private Discount dis;
+        private LegacyBilling bill;
         public SubscriptionRenewalService() {
             customerRepository = new CustomerRepository();
             planRepository = new SubscriptionPlanRepository();
-
+            dis = new Discount(); 
+            bill = new LegacyBilling();
         }
         public RenewalInvoice CreateRenewalInvoice(
             int customerId,
@@ -54,7 +57,6 @@ namespace LegacyRenewalApp
             decimal discountAmount = 0m;
             string notes = string.Empty;
             decimal subtotalAfterDiscount = 0m;
-            var dis = new Discount();
             (discountAmount, notes, subtotalAfterDiscount) = dis.calculate(customer, plan, baseAmount, seatCount, useLoyaltyPoints);
             
             
@@ -148,7 +150,8 @@ namespace LegacyRenewalApp
                 GeneratedAt = DateTime.UtcNow
             };
 
-            LegacyBillingGateway.SaveInvoice(invoice);
+            
+            bill.saveInvoce(invoice);
 
             if (!string.IsNullOrWhiteSpace(customer.Email))
             {
@@ -157,7 +160,7 @@ namespace LegacyRenewalApp
                     $"Hello {customer.FullName}, your renewal for plan {normalizedPlanCode} " +
                     $"has been prepared. Final amount: {invoice.FinalAmount:F2}.";
 
-                LegacyBillingGateway.SendEmail(customer.Email, subject, body);
+                bill.sendEmail(customer.Email, subject, body);
             }
 
             return invoice;
