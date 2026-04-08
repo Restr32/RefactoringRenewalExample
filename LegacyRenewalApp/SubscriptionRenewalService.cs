@@ -6,7 +6,7 @@ namespace LegacyRenewalApp
         private CustomerRepository customerRepository;
         private SubscriptionPlanRepository planRepository;
         private Discount dis;
-        private LegacyBilling bill;
+        private IBillingService bill;
         public SubscriptionRenewalService() {
             customerRepository = new CustomerRepository();
             planRepository = new SubscriptionPlanRepository();
